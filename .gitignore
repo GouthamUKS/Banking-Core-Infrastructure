@@ -1,0 +1,64 @@
+# .gitignore
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Docker
+.docker
+docker-compose.override.yml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Database backups
+backups/
+*.sql
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+
+# Security
+*.key
+*.pem
+*.crt
+config/ssl/*
+!config/ssl/.gitkeep
+
+# Build artifacts
+build/
+dist/
+*.whl
+*.tar.gz
+
+# Local development
+local_config/
+node_modules/

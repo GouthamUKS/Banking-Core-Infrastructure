@@ -1,0 +1,39 @@
+project_name: "enterprise-iac"
+environment: "development"  # dev, staging, production
+
+# Database Configuration
+db_name: "enterprise_db"
+db_user: "postgres"
+db_password: "${DB_PASSWORD}"  # Set via environment variable
+db_port: 5432
+backup_dir: "./backups"
+migration_dir: "./database/migrations"
+
+# Web Server Configuration
+web_port: 8080
+web_port_internal: 5000
+web_host: "0.0.0.0"
+enable_ssl: false
+log_level: "INFO"
+
+# Docker Configuration
+docker_compose_file: "docker-compose.yml"
+docker_image_registry: ""  # Optional: ECR, Docker Hub, etc.
+
+# Security Settings
+backup_enabled: true
+backup_retention_days: 30
+enable_health_checks: true
+health_check_interval: 30
+
+# Monitoring and Logging
+enable_logging: true
+log_driver: "json-file"
+max_log_size: "10m"
+max_log_files: 3
+
+# Container Resource Limits
+postgres_memory_limit: "512m"
+postgres_cpu_limit: "0.5"
+web_memory_limit: "256m"
+web_cpu_limit: "0.5"
