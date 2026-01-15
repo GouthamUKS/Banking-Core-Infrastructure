@@ -1,0 +1,58 @@
+#! web-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: web
+    namespace: enterprise-gradeiac
+    labels:
+        com.docker.compose.project: enterprise-gradeiac
+        com.docker.compose.service: web
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: enterprise-gradeiac
+            com.docker.compose.service: web
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: enterprise-gradeiac
+                com.docker.compose.service: web
+                com.docker.compose.network.iac_network: "true"
+        spec:
+            restartPolicy: unless-stopped
+            containers:
+                - name: iac-project-web
+                  image: enterprise-gradeiac-web
+                  imagePullPolicy: IfNotPresent
+                  env:
+                    - name: DATABASE_URL
+                      value: "postgresql://postgres:SecurePassword123!@postgres:5432/enterprise_db"
+                    - name: FLASK_APP
+                      value: "app.py"
+                    - name: FLASK_ENV
+                      value: "development"
+                    - name: LOG_LEVEL
+                      value: "INFO"
+                    - name: SECRET_KEY
+                      value: "dev-secret-key-change-in-production"
+                  livenessProbe:
+                    exec:
+                        command: ['curl -f http://localhost:5000/health']
+                    periodSeconds: 30
+                    initialDelaySeconds: 40
+                    timeoutSeconds: 10
+                    failureThreshold: 3
+                  ports:
+                    - name: web-5000
+                      containerPort: 5000
+                  volumeMounts:
+                    - name: app
+                      mountPath: /app
+            volumes:
+                - name: app
+                  hostPath:
+                    path: /Users/gouthamsoratoor/Documents/01_G_Workspace/01_Projects/Enterprise-Grade IaC/web

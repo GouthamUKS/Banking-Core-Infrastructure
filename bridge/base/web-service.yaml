@@ -1,0 +1,19 @@
+#! web-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: web-published
+    namespace: enterprise-gradeiac
+    labels:
+        com.docker.compose.project: enterprise-gradeiac
+        com.docker.compose.service: web
+spec:
+    selector:
+        com.docker.compose.project: enterprise-gradeiac
+        com.docker.compose.service: web
+    ports:
+        - name: web-8080
+          port: 8080
+          protocol: TCP
+          targetPort: web-5000

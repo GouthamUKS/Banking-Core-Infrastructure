@@ -1,0 +1,63 @@
+#! postgres-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: postgres
+    namespace: enterprise-gradeiac
+    labels:
+        com.docker.compose.project: enterprise-gradeiac
+        com.docker.compose.service: postgres
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: enterprise-gradeiac
+            com.docker.compose.service: postgres
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: enterprise-gradeiac
+                com.docker.compose.service: postgres
+                com.docker.compose.network.iac_network: "true"
+        spec:
+            restartPolicy: unless-stopped
+            containers:
+                - name: iac-project-postgres
+                  image: postgres:15-alpine
+                  imagePullPolicy: IfNotPresent
+                  env:
+                    - name: POSTGRES_DB
+                      value: "enterprise_db"
+                    - name: POSTGRES_INITDB_ARGS
+                      value: "--encoding=UTF8 --locale=C"
+                    - name: POSTGRES_PASSWORD
+                      value: "SecurePassword123!"
+                    - name: POSTGRES_USER
+                      value: "postgres"
+                  livenessProbe:
+                    exec:
+                        command:
+                            - /bin/sh
+                            - -c
+                            - pg_isready -U postgres -d enterprise_db
+                    periodSeconds: 10
+                    timeoutSeconds: 5
+                    failureThreshold: 5
+                  ports:
+                    - name: postgres-5432
+                      containerPort: 5432
+                  volumeMounts:
+                    - name: var-lib-postgresql-data
+                      mountPath: /var/lib/postgresql/data
+                    - name: docker-entrypoint-initdb-d
+                      mountPath: /docker-entrypoint-initdb.d
+            volumes:
+                - name: var-lib-postgresql-data
+                  persistentVolumeClaim:
+                    claimName: postgres-postgres-data
+                - name: docker-entrypoint-initdb-d
+                  hostPath:
+                    path: /Users/gouthamsoratoor/Documents/01_G_Workspace/01_Projects/Enterprise-Grade IaC/database/init

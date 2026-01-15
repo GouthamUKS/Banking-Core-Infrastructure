@@ -1,0 +1,17 @@
+#! kustomization.yaml
+# Generated code, do not edit
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+    - 0-enterprise-gradeiac-namespace.yaml
+    - iac_network-network-policy.yaml
+    - nginx-deployment.yaml
+    - nginx-expose.yaml
+    - nginx-service.yaml
+    - postgres-deployment.yaml
+    - postgres-expose.yaml
+    - postgres-postgres_data-persistentVolumeClaim.yaml
+    - postgres-service.yaml
+    - web-deployment.yaml
+    - web-expose.yaml
+    - web-service.yaml

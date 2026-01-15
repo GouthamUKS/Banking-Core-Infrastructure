@@ -1,0 +1,57 @@
+#! nginx-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: nginx
+    namespace: enterprise-gradeiac
+    labels:
+        com.docker.compose.project: enterprise-gradeiac
+        com.docker.compose.service: nginx
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: enterprise-gradeiac
+            com.docker.compose.service: nginx
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: enterprise-gradeiac
+                com.docker.compose.service: nginx
+                com.docker.compose.network.iac_network: "true"
+        spec:
+            restartPolicy: unless-stopped
+            containers:
+                - name: iac-project-nginx
+                  image: nginx:alpine
+                  imagePullPolicy: IfNotPresent
+                  livenessProbe:
+                    exec:
+                        command: ['wget --quiet --tries=1 --spider http://localhost/health']
+                    periodSeconds: 30
+                    timeoutSeconds: 10
+                    failureThreshold: 3
+                  ports:
+                    - name: nginx-80
+                      containerPort: 80
+                    - name: nginx-443
+                      containerPort: 443
+                  volumeMounts:
+                    - name: etc-nginx-nginx-conf
+                      mountPath: /etc/nginx/nginx.conf
+                      readOnly: true
+                    - name: etc-nginx-ssl
+                      mountPath: /etc/nginx/ssl
+                      readOnly: true
+            volumes:
+                - name: etc-nginx-nginx-conf
+                  hostPath:
+                    path: /Users/gouthamsoratoor/Documents/01_G_Workspace/01_Projects/Enterprise-Grade IaC/config/nginx.conf
+                  readOnly: true
+                - name: etc-nginx-ssl
+                  hostPath:
+                    path: /Users/gouthamsoratoor/Documents/01_G_Workspace/01_Projects/Enterprise-Grade IaC/config/ssl
+                  readOnly: true
