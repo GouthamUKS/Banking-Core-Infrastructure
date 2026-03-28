@@ -1,6 +1,6 @@
 # Banking Core Infrastructure
 
-> Python deployment automation and Flask REST API for a multi-container Docker environment — cuts environment setup from 2 hours to 5 minutes.
+> Python deployment automation and Flask REST API for a multi-container Docker environment. Cuts environment setup from 2 hours to 5 minutes.
 
 ## What this is
 
@@ -11,7 +11,7 @@ The original motivation was removing the manual steps from spinning up a develop
 ## Architecture
 
 ```
-Internet → Nginx (port 80/443) → Flask (port 5000) → PostgreSQL (port 5432)
+Internet -> Nginx (port 80/443) -> Flask (port 5000) -> PostgreSQL (port 5432)
 ```
 
 - **Nginx** handles SSL termination, gzip compression, 30-day static asset caching, and adds security headers (X-Frame-Options, X-Content-Type-Options, X-XSS-Protection, HSTS). It proxies to the Flask container using least-connection balancing.
@@ -30,12 +30,12 @@ Internet → Nginx (port 80/443) → Flask (port 5000) → PostgreSQL (port 5432
 
 `deploy.py` is structured around four classes:
 
-- `DockerOrchestrator` — wraps `docker compose` subprocesses for build, up, down, and status queries
-- `DatabaseManager` — polls `psycopg2` until the database accepts connections (up to 30 attempts, 2s apart), then runs SQL migration files from `database/migrations/` in sorted order
-- `HealthCheckManager` — checks container state via `docker compose ps` and verifies port availability before deployment starts
-- `DeploymentManager` — coordinates the above in sequence: pre-flight checks → image build → container start → database wait → migrations → health check
+- `DockerOrchestrator`: wraps `docker compose` subprocesses for build, up, down, and status queries
+- `DatabaseManager`: polls `psycopg2` until the database accepts connections (up to 30 attempts, 2s apart), then runs SQL migration files from `database/migrations/` in sorted order
+- `HealthCheckManager`: checks container state via `docker compose ps` and verifies port availability before deployment starts
+- `DeploymentManager`: coordinates the above in sequence: pre-flight checks, image build, container start, database wait, migrations, health check
 
-The `GET /health` endpoint in `app.py` runs `SELECT 1` against the database to verify connectivity. `GET /health/deep` goes further — it queries the current server timestamp and returns record counts for both models. All three containers have `no-new-privileges: true` set in their security options.
+The `GET /health` endpoint in `app.py` runs `SELECT 1` against the database to verify connectivity. `GET /health/deep` goes further: it queries the current server timestamp and returns record counts for both models. All three containers have `no-new-privileges: true` set in their security options.
 
 Nginx's `/health` location returns 200 without proxying to Flask, keeping it fast for load balancer checks.
 
@@ -43,8 +43,8 @@ Nginx's `/health` location returns 200 without proxying to Flask, keeping it fas
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/` | Root — confirms the API is running |
-| GET | `/health` | Liveness check — runs SELECT 1, returns 503 if database is down |
+| GET | `/` | Root, confirms the API is running |
+| GET | `/health` | Liveness check, runs SELECT 1, returns 503 if database is down |
 | GET | `/health/deep` | Returns DB server time and record counts |
 | GET | `/api/v1/info` | App version, environment, endpoint list |
 | GET | `/api/v1/applications` | List all applications |
